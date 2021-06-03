@@ -1,0 +1,6 @@
+%help
+  Creates a basic SST Core image with the necessary software dependencies
+
+%labels
+  Author contact@tactcomplabs.com
+  Version 11.0.0
