@@ -10,13 +10,13 @@ Include: software-properties-common
   mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/11.0.0/src
 
 %files
-  sstcore-11.0.0.tar.gz /opt/SST/11.0.0
+  sstcore-11.0.0.tar.gz /opt/SST/11.0.0/src/
 
 %environment
   PATH=$PATH:/opt/SST/11.0.0/bin
 
 %runscript
-  echo "SSTCore 11.0.0 created $NOW"
+  echo "SSTCore 11.0.0 using Ubuntu 18.04 created $NOW"
   echo "Arguments utilized: $*"
   exec echo "$@"
 
@@ -53,7 +53,7 @@ Include: software-properties-common
   echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
 
 %help
-  SST 11.0.0: Creates a basic SST Core image with the necessary software dependencies
+  SST 11.0.0-Ubuntu 18.04: Creates a basic SST Core image with the necessary software dependencies
 
 %labels
   Author contact@tactcomplabs.com
