@@ -41,13 +41,13 @@ The supported operating systems are listed as follows:
 Building one or more singularity containers can be performed using the following commands:
 (edit the commands for your particular environment)
 ```
-cd ./containers/singularity/
-sudo singularity build sstcore-11.0.0-ubuntu-18.04.sif sstcore-11.0.0-ubuntu-18.04.def
+$> cd ./containers/singularity/
+$> sudo singularity build sstcore-11.0.0-ubuntu-18.04.sif sstcore-11.0.0-ubuntu-18.04.def
 ```
 
 Verifying that the container was build successfully can be performed using the following:
 ```
-singularity exec sstcore-11.0.0-ubuntu-18.04.sif sst --help
+$> singularity exec sstcore-11.0.0-ubuntu-18.04.sif sst --help
 ```
 
 ### Docker
