@@ -5,17 +5,17 @@ Include: yum
  
 
 %setup
-    mkdir -p ${SINGULARITY_ROOTFS}/opt/sst-core/
-    mkdir -p ${SINGULARITY_ROOTFS}/opt/sst-elements/
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/11.0.0/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/11.0.0/elements
 
 
 %files
-    sstcore-11.0.0.tar.gz /opt/sst-core
-    sstelements-11.0.0.tar.gz /opt/sst-elements
+    sstcore-11.0.0.tar.gz /opt/SST/11.0.0/src/
+    sstelements-11.0.0.tar.gz /opt/SST/11.0.0/src/
 
 
 %environment
-    PATH=$PATH:/opt/sst-core/bin
+    PATH=$PATH:/opt/SST/11.0.0/bin
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 
@@ -58,13 +58,13 @@ Include: yum
     source scl_source enable devtoolset-8 || true
     PATH=/opt/rh/devtoolset-8/root/bin:$PATH
 
-    cd /opt/sst-core
+    cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
-    cd sstcore-11.0.0; ./configure --disable-mpi --prefix=/opt/sst-core; time make -j all; make install
+    cd sstcore-11.0.0; ./configure --disable-mpi --prefix=/opt/SST/11.0.0; time make -j all; make install
  
-    cd /opt/sst-elements
+    cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstelements-11.0.0.tar.gz
-    cd sst-elements-library-11.0.0; ./configure --prefix=/opt/sst-elements/ -with-sst-core=/opt/sst-core/; time make -j all; make install
+    cd sst-elements-library-11.0.0; ./configure --prefix=/opt/SST/11.0.0/elements -with-sst-core=/opt/SST/11.0.0; time make -j all; make install
 
 %help
     Create the singularity base image with the OS, yum

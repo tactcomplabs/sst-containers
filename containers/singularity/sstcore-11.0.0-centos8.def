@@ -5,15 +5,15 @@ Include: yum
  
 
 %setup
-    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/11.0.0/src
 
 
 %files
-    sstcore-11.0.0.tar.gz /opt/SST
+    sstcore-11.0.0.tar.gz /opt/SST/11.0.0/src/
 
 
 %environment
-    PATH=$PATH:/opt/SST/bin
+    PATH=$PATH:/opt/SST/11.0.0/bin
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 #    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
 #    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
@@ -59,9 +59,9 @@ Include: yum
     source scl_source enable devtoolset-8 || true
     PATH=/opt/rh/devtoolset-8/root/bin:$PATH
 
-    cd /opt/SST
+    cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
-    cd sstcore-11.0.0; ./configure --disable-mpi --prefix=/opt/SST; time make -j all; make install
+    cd sstcore-11.0.0; ./configure --disable-mpi --prefix=/opt/SST/11.0.0; time make -j all; make install
  
 
 %help
