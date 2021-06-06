@@ -12,7 +12,9 @@ Include: yum
 %files
     sstcore-11.0.0.tar.gz /opt/SST/11.0.0/src/
     sstelements-11.0.0.tar.gz /opt/SST/11.0.0/src/
-
+#    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
+#    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
+#    semodule -X 300 -i my-systemdtmpfile.pp
 
 %environment
     PATH=$PATH:/opt/SST/11.0.0/bin
@@ -53,7 +55,7 @@ Include: yum
           setuptools \
           xmltodict \
           wheel
- 
+
     set -e
     source scl_source enable devtoolset-8 || true
     PATH=/opt/rh/devtoolset-8/root/bin:$PATH
@@ -61,10 +63,10 @@ Include: yum
     cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
     cd sstcore-11.0.0; ./configure --disable-mpi --prefix=/opt/SST/11.0.0; time make -j all; make install
- 
+
     cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstelements-11.0.0.tar.gz
     cd sst-elements-library-11.0.0; ./configure --prefix=/opt/SST/11.0.0/elements -with-sst-core=/opt/SST/11.0.0; time make -j all; make install
 
 %help
-    SST 11.0.0-Centos 7: Creates an SST Core + SST Elements image with the necessary software dependencies
+    SST 11.0.0-Centos 8: Creates an SST Core + SST Elements image with the necessary software dependencies

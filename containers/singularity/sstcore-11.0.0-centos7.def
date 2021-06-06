@@ -62,5 +62,4 @@ Include: yum
  
 
 %help
-    Create the singularity base image with the OS, yum
-    packages, and other software dependencies. 
+    SST 11.0.0-Centos 7: Creates a basic SST Core image with the necessary software dependencies
