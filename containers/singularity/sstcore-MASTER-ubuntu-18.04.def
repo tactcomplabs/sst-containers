@@ -1,8 +1,8 @@
 ##############################################
-# sstcore-MASTER-ubuntu-20.04.def
+# sstcore-MASTER-ubuntu-18.04.def
 ##############################################
 Bootstrap: debootstrap
-OSVersion: focal
+OSVersion: bionic
 MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 Include: software-properties-common
 
@@ -20,9 +20,9 @@ Include: software-properties-common
   exec echo "$@"
 
 %post
-  add-apt-repository 'deb http://archive.ubuntu.com/ubuntu focal main universe'
-  add-apt-repository 'deb http://archive.ubuntu.com/ubuntu focal-security main universe'
-  add-apt-repository 'deb http://archive.ubuntu.com/ubuntu focal-updates main universe'
+  add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic main universe'
+  add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security main universe'
+  add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates main universe'
   apt-get update && apt-get install -y \
     build-essential \
     automake \
@@ -55,7 +55,7 @@ Include: software-properties-common
   echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
 
 %help
-  SST Git Master-Ubuntu 20.04: Creates a basic SST Core image with the necessary software dependencies
+  SST Git Master-Ubuntu 18.04: Creates a basic SST Core image with the necessary software dependencies
 
 %labels
   Author contact@tactcomplabs.com
