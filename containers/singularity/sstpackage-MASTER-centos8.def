@@ -1,0 +1,70 @@
+Bootstrap: yum
+OSVersion: 7
+MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearch/
+Include: yum
+
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/MASTER/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/MASTER/elements
+
+%files
+
+
+%environment
+    PATH=$PATH:/opt/SST/MASTER/bin
+    LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+#    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
+#    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
+#    semodule -X 300 -i my-systemdtmpfile.pp
+
+
+%runscript
+    scl enable devtoolset-8 bash
+
+
+%post
+    SINGULARITY_PREPEND_PATH=/opt/rh/devtoolset-8/root/bin/
+    time yum clean all
+    time yum update -y
+    time yum install -y centos-release-scl \
+		yum-utils
+    time yum-config-manager --enable rhel-server-rhscl-7-rpms
+    time yum install -y \
+               devtoolset-8 \
+               doxygen \
+               graphviz \
+               time \
+               mpich \
+               python3 \
+               python3-devel \
+               python3-pip \
+               automake \
+               git
+
+
+    time yum clean all
+    time python3 -m pip install --find-links=. \
+          black \
+          matplotlib \
+          matplotlib-label-lines \
+          networkx==2.4 \
+          numpy==1.19.1 \
+          pandas \
+          setuptools \
+          xmltodict \
+          wheel
+
+    set -e
+    source scl_source enable devtoolset-8 || true
+    PATH=/opt/rh/devtoolset-8/root/bin:$PATH
+
+    cd /opt/SST/MASTER/src
+    git clone https://github.com/sstsimulator/sst-core.git
+    git clone https://github.com/sstsimulator/sst-elements.git
+    cd sst-core; ./autogen.sh; ./configure --disable-mpi --prefix=/opt/SST/MASTER; time make -j all; make install
+    cd ../sst-elements; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER/elements -with-sst-core=/opt/SST/MASTER; make -j all; make install
+
+
+%help
+    SST Got Master-Centos 8: Creates a basic SST Core image with the necessary software dependencies
