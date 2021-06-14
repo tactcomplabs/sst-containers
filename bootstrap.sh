@@ -91,7 +91,7 @@ verify_packages_11() {
   fi
 
   if [ "$SSTELEMENTS_SHA1" = "$SSTELEMENTS_11_0_0_SHA1" ]; then
-    echo "SSTCORE 11 SHA1 VERIFIED!"
+    echo "SSTELEMENTS 11 SHA1 VERIFIED!"
   else
     echo "FAILED TO VERIFY SSTCORE 11 SHA1 HASH"
     exit -1
