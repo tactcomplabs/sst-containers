@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 #
 # Copyright (C) 2017-2021 Tactical Computing Laboratories, LLC
 # All Rights Reserved
@@ -115,7 +115,7 @@ check_container_tools
 download_packages_11
 
 #-- STAGE4: Verify the packages
-#verify_packages_11
+verify_packages_11
 
 #-- STAGE5: Setup the symlinks
 setup_symlinks_11
