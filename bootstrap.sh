@@ -19,6 +19,9 @@ SSTELEMENTS_11_0_0_SHA1="8b9e779a8ace79a2d5767692a65505c63d3c5cd1"
 GETCMD=""
 SHA1SUM=""
 
+MY_LN=`which ln`
+MY_PWD=`pwd`
+
 setup_get()  {
   if [ -x `which wget` ]
   then
@@ -100,10 +103,8 @@ verify_packages_11() {
 }
 
 setup_symlinks_11() {
-  MY_LN=`which ln`
-  MY_PWD=`pwd`
   $MY_LN -fs $MY_PWD/$SSTCORE_11_0_0 ./containers/singularity/$SSTCORE_11_0_0
-  `which ln` -fs `pwd`/$SSTELEMENTS_11_0_0 ./containers/singularity/$SSTELEMENTS_11_0_0
+  $MY_LN -fs $MY_PWD/$SSTELEMENTS_11_0_0 ./containers/singularity/$SSTELEMENTS_11_0_0
 }
 
 #-- STAGE1: Setup the download mechanism
