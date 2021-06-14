@@ -100,8 +100,8 @@ verify_packages_11() {
 }
 
 setup_symlinks_11() {
-  ln -fs `pwd`/$SSTCORE_11_0_0 ./containers/singularity/$SSTCORE_11_0_0
-  ln -fs `pwd`/$SSTELEMENTS_11_0_0 ./containers/singularity/$SSTELEMENTS_11_0_0
+  `which ln` -fs `pwd`/$SSTCORE_11_0_0 ./containers/singularity/$SSTCORE_11_0_0
+  `which ln` -fs `pwd`/$SSTELEMENTS_11_0_0 ./containers/singularity/$SSTELEMENTS_11_0_0
 }
 
 #-- STAGE1: Setup the download mechanism
