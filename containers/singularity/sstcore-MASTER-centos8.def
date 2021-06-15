@@ -40,8 +40,10 @@ Include: yum
                python3-devel \
                python3-pip \
                automake \
-               git
-    time yum group install "Development Tools"
+               git \
+               libtool-ltdl \
+               libtool-ltdl-devel
+    time yum group install -y "Development Tools"
 
     time yum clean all
     time python3 -m pip install --find-links=. \
