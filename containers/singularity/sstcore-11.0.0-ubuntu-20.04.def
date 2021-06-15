@@ -4,7 +4,7 @@
 Bootstrap: debootstrap
 OSVersion: focal
 MirrorURL: http://us.archive.ubuntu.com/ubuntu/
-Include: software-properties-common
+Include: software-properties-common dbus-user-session
 
 %setup
   mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/11.0.0/src
