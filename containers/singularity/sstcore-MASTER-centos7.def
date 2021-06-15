@@ -38,6 +38,7 @@ Include: yum
                python3-pip \
                automake \
                git
+    time yum group install "Development Tools"
 
 
     time yum clean all
