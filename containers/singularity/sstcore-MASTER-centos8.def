@@ -55,7 +55,11 @@ Include: yum
           pandas \
           setuptools \
           xmltodict \
-          wheel
+          wheel \
+          testtools \
+          blessings \
+          pygments \
+          pdoc3
 
     set -e
     source scl_source enable devtoolset-8 || true

@@ -43,7 +43,11 @@ Include: software-properties-common dbus-user-session
     pandas \
     setuptools \
     xmltodict \
-    wheel
+    wheel \
+    testtools \
+    blessings \
+    pygments \
+    pdoc3
 
   cd /opt/SST/11.0.0/src
   tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
