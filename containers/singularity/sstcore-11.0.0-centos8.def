@@ -56,8 +56,7 @@ Include: yum
           wheel \
           testtools \
           blessings \
-          pygments \
-          pdoc3
+          pygments
 
     set -e
     source scl_source enable devtoolset-8 || true

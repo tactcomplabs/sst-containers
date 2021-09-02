@@ -46,8 +46,7 @@ Include: software-properties-common
     wheel \
     testtools \
     blessings \
-    pygments \
-    pdoc3
+    pygments
 
   cd /opt/SST/11.0.0/src
   tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz

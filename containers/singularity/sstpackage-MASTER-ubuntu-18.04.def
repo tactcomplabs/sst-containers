@@ -49,8 +49,7 @@ Include: software-properties-common
     wheel \
     testtools \
     blessings \
-    pygments \
-    pdoc3
+    pygments
 
   cd /opt/SST/MASTER/src
   git clone https://github.com/sstsimulator/sst-core.git
