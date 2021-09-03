@@ -45,7 +45,7 @@ Include: yum
 
 
     time yum clean all
-    time python3 -m pip install --find-links=. \
+    time python3 -m pip install --upgrade pip --find-links=. \
           black \
           matplotlib \
           matplotlib-label-lines \
