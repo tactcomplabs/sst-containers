@@ -39,7 +39,8 @@ Include: yum
                automake \
                git \
                libtool-ltdl \
-               libtool-ltdl-devel
+               libtool-ltdl-devel \
+               zlib-devel
     time yum group install -y "Development Tools"
 
 

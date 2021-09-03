@@ -34,7 +34,9 @@ Include: software-properties-common dbus-user-session
     doxygen \
     git \
     libtool \
-    libtool-bin
+    libtool-bin \
+    libjpeg8-dev \
+    zlib1g-dev
 
   python3 -m pip install --find-links=. \
     black \
