@@ -45,6 +45,8 @@ Include: yum
 
 
     time yum clean all
+    time python3 -m pip install --upgrade pip --find-links=.
+    time python3 -m pip install --find-links=. --upgrade Pillow
     time python3 -m pip install --upgrade pip --find-links=. \
           black \
           matplotlib \
