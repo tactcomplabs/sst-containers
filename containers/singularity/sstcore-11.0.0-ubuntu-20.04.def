@@ -52,7 +52,7 @@ Include: software-properties-common dbus-user-session
 
   cd /opt/SST/11.0.0/src
   tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
-  cd sstcore-11.0.0; ./configure --disable-mpi --prefix=/opt/SST/11.0.0; make -j all; make install
+  cd sstcore-11.0.0; ./configure --prefix=/opt/SST/11.0.0; make -j all; make install
 
   NOW=`date`
   echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
