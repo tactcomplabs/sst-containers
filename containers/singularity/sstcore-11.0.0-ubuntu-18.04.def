@@ -50,6 +50,7 @@ Include: software-properties-common
     blessings \
     pygments
 
+  echo "btl_base_warn_component_unused = 0" >> /etc/openmpi/openmpi-mca-params.conf
   cd /opt/SST/11.0.0/src
   tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
   cd sstcore-11.0.0; ./configure --prefix=/opt/SST/11.0.0; make -j all; make install
