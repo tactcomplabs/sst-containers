@@ -1,11 +1,12 @@
 Bootstrap: yum
-OSVersion: 7
+OSVersion: 8
 MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearch/
 Include: yum
- 
+
 
 %setup
     mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/11.0.0/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/OpenMPI/4.0.5/src
 
 
 %files
@@ -13,7 +14,7 @@ Include: yum
 
 
 %environment
-    PATH=$PATH:/opt/SST/11.0.0/bin
+    PATH=$PATH:/opt/SST/11.0.0/bin:/opt/OpenMPI/4.0.5/bin
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 #    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
 #    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
@@ -36,7 +37,7 @@ Include: yum
                doxygen \
                graphviz \
                time \
-               openmpi \
+               wget \
                python3 \
                python3-devel \
                python3-pip \
@@ -65,10 +66,17 @@ Include: yum
     source scl_source enable devtoolset-8 || true
     PATH=/opt/rh/devtoolset-8/root/bin:$PATH
 
+    cd /opt/OpenMPI/4.0.5/src
+    wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.5.tar.gz
+    tar --no-same-owner -xzvf openmpi-4.0.5.tar.gz
+    cd openmpi-4.0.5
+    ./configure --prefix=/opt/OpenMPI/4.0.5
+    make -j; make install
+    export PATH=/opt/OpenMPI/4.0.5/bin:$PATH
     cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
     cd sstcore-11.0.0; ./configure --prefix=/opt/SST/11.0.0; time make -j all; make install
- 
+
 
 %help
     SST 11.0.0-Centos 8: Creates a basic SST Core image with the necessary software dependencies
