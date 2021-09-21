@@ -67,7 +67,7 @@ Include: yum
 
     cd /opt/OpenMPI/4.0.5/src
     wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.5.tar.gz
-    tar --no-same-owner xzvf openmpi-4.0.5.tar.gz
+    tar --no-same-owner -xzvf openmpi-4.0.5.tar.gz
     cd openmpi-4.0.5
     ./configure --prefix=/opt/OpenMPI/4.0.5
     make -j; make install
