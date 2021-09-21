@@ -37,6 +37,7 @@ Include: yum
                doxygen \
                graphviz \
                time \
+               openmpi \
                mpich \
                python3 \
                python3-devel \
@@ -68,7 +69,7 @@ Include: yum
 
     cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
-    cd sstcore-11.0.0; ./configure --disable-mpi --prefix=/opt/SST/11.0.0; time make -j all; make install
+    cd sstcore-11.0.0; ./configure --prefix=/opt/SST/11.0.0; time make -j all; make install
 
     cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstelements-11.0.0.tar.gz

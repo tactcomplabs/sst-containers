@@ -54,7 +54,7 @@ Include: software-properties-common
 
   cd /opt/SST/MASTER/src
   git clone https://github.com/sstsimulator/sst-core.git
-  cd sst-core; ./autogen.sh; ./configure --disable-mpi --prefix=/opt/SST/MASTER; make -j all; make install
+  cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER; make -j all; make install
 
   NOW=`date`
   echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
