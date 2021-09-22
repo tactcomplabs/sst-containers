@@ -7,7 +7,7 @@ Include: yum
 %setup
     mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/MASTER/src
     mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/MASTER/elements
-    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/MASTER/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/OpenMPI/4.0.5/src
 
 %files
 
