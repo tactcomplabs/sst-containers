@@ -39,6 +39,7 @@ Include: yum
                python3-pip \
                doxygen \
                automake \
+               libtool-ltdl-devel \
                zlib-devel
 
     time yum clean all
@@ -71,7 +72,7 @@ Include: yum
     git clone https://github.com/sstsimulator/sst-core.git
     git clone https://github.com/sstsimulator/sst-elements.git
     cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER; time make -j all; make install
-    cd ../sst-elements; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER/elements -with-sst-core=/opt/SST/MASTER; make -j all; make install
+    cd ../sst-elements; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER/elements -with-sst-core=/opt/SST/MASTER; make all; make install
 
 
 %help
