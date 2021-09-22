@@ -34,6 +34,7 @@ Include: software-properties-common
     python3-pip \
     doxygen \
     libjpeg8-dev \
+    openssh-server \
     zlib1g-dev
 
   python3 -m pip install --find-links=. \
