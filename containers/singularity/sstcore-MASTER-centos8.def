@@ -21,31 +21,25 @@ Include: yum
 
 
 %runscript
-    scl enable devtoolset-8 bash
-
 
 %post
-    SINGULARITY_PREPEND_PATH=/opt/rh/devtoolset-8/root/bin/
     time yum clean all
     time yum update -y
-    time yum install -y centos-release-scl \
-		yum-utils
-    time yum-config-manager --enable rhel-server-rhscl-7-rpms
+    yum install -y dnf-plugins-core
+    yum install -y epel-release
+    yum install -y 'dnf-command(config-manager)'
+    yum config-manager --set-enabled powertools
+    dnf group install -y "Development Tools"
     time yum install -y \
-               devtoolset-8 \
-               doxygen \
                graphviz \
                time \
                wget \
                python3 \
                python3-devel \
                python3-pip \
+               doxygen \
                automake \
-               git \
-               libtool-ltdl \
-               libtool-ltdl-devel \
                zlib-devel
-    time yum group install -y "Development Tools"
 
     time yum clean all
     time python3 -m pip install --upgrade pip --find-links=.
@@ -65,8 +59,6 @@ Include: yum
           pygments
 
     set -e
-    source scl_source enable devtoolset-8 || true
-    PATH=/opt/rh/devtoolset-8/root/bin:$PATH
 
     cd /opt/OpenMPI/4.0.5/src
     wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.5.tar.gz
@@ -81,4 +73,4 @@ Include: yum
 
 
 %help
-    SST Got Master-Centos 8: Creates a basic SST Core image with the necessary software dependencies
+    SST Git Master-Centos 8: Creates a basic SST Core image with the necessary software dependencies
