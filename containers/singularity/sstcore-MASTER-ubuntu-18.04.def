@@ -37,7 +37,8 @@ Include: software-properties-common
     libtool-bin \
     libjpeg8-dev \
     openssh-server \
-    zlib1g-dev
+    zlib1g-dev \
+    valgrind
 
   python3 -m pip install --find-links=. \
     black \

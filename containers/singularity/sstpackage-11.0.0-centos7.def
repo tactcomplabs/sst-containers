@@ -41,7 +41,8 @@ Include: yum
                python3-devel \
                python3-pip \
                automake \
-               zlib-devel
+               zlib-devel \
+               valgrind
 
 
     time yum clean all

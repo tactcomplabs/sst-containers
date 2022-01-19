@@ -40,7 +40,8 @@ Include: yum
                git \
                libtool-ltdl \
                libtool-ltdl-devel \
-               zlib-devel
+               zlib-devel \
+               valgrind
     time yum group install -y "Development Tools"
 
 

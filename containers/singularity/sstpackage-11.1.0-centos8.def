@@ -41,7 +41,8 @@ Include: yum
                python3-pip \
                doxygen \
                automake \
-               zlib-devel
+               zlib-devel \
+               valgrind
 
     time yum clean all
     time python3 -m pip install --upgrade pip --find-links=.
