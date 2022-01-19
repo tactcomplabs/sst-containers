@@ -34,7 +34,8 @@ Include: software-properties-common dbus-user-session
     python3-pip \
     doxygen \
     libjpeg8-dev \
-    zlib1g-dev
+    zlib1g-dev \
+    valgrind
 
   python3 -m pip install --find-links=. \
     black \

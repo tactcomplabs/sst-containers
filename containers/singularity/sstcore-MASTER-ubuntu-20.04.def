@@ -36,7 +36,8 @@ Include: software-properties-common dbus-user-session
     libtool \
     libtool-bin \
     libjpeg8-dev \
-    zlib1g-dev
+    zlib1g-dev \
+    valgrind
 
   python3 -m pip install --find-links=. \
     black \
