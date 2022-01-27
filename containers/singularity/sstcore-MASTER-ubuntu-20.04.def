@@ -55,7 +55,7 @@ Include: software-properties-common dbus-user-session
 
   cd /opt/SST/MASTER/src
   git clone https://github.com/sstsimulator/sst-core.git
-  cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER; make -j all; make install
+  cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER; make -j4 all; make install
 
   NOW=`date`
   echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT

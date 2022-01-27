@@ -71,16 +71,16 @@ Include: yum
     tar --no-same-owner -xzvf openmpi-4.0.5.tar.gz
     cd openmpi-4.0.5
     ./configure --prefix=/opt/OpenMPI/4.0.5
-    make -j; make install
+    make -j4; make install
     export PATH=/opt/OpenMPI/4.0.5/bin:$PATH
 
     cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstcore-11.0.0.tar.gz
-    cd sstcore-11.0.0; ./configure --prefix=/opt/SST/11.0.0; time make -j all; make install
+    cd sstcore-11.0.0; ./configure --prefix=/opt/SST/11.0.0; time make -j4 all; make install
 
     cd /opt/SST/11.0.0/src
     tar --no-same-owner -xvzf sstelements-11.0.0.tar.gz
-    cd sst-elements-library-11.0.0; ./configure --prefix=/opt/SST/11.0.0/elements -with-sst-core=/opt/SST/11.0.0; time make -j all; make install
+    cd sst-elements-library-11.0.0; ./configure --prefix=/opt/SST/11.0.0/elements -with-sst-core=/opt/SST/11.0.0; time make -j4 all; make install
 
 %help
     SST 11.0.0-Centos 7: Creates an SST Core + SST Elements image with the necessary software dependencies
