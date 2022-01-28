@@ -67,12 +67,12 @@ Include: yum
     tar --no-same-owner -xzvf openmpi-4.0.5.tar.gz
     cd openmpi-4.0.5
     ./configure --prefix=/opt/OpenMPI/4.0.5
-    make -j; make install
+    make -j4; make install
     export PATH=/opt/OpenMPI/4.0.5/bin:$PATH
     cd /opt/SST/MASTER/src
     git clone https://github.com/sstsimulator/sst-core.git
     git clone https://github.com/sstsimulator/sst-elements.git
-    cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER; time make -j all; make install
+    cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER; time make -j4 all; make install
     cd ../sst-elements; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER/elements -with-sst-core=/opt/SST/MASTER; make all; make install
 
 
