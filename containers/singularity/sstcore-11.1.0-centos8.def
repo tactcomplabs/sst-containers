@@ -1,6 +1,6 @@
 Bootstrap: yum
 OSVersion: 8
-MirrorURL: http://mirror.centos.org/centos-8/8/BaseOS/x86_64/os/
+MirrorURL: http://packages.oit.ncsu.edu/centos/8-stream/BaseOS/x86_64/os/
 Include: yum
 
 
