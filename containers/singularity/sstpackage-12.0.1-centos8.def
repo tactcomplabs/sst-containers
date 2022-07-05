@@ -5,20 +5,20 @@ Include: yum
 
 
 %setup
-    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/12.1.0/src
-    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/12.1.0/elements
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/12.0.1/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/12.0.1/elements
     mkdir -p ${SINGULARITY_ROOTFS}/opt/OpenMPI/4.0.5/src
 
 
 %files
-    sstcore-12.1.0.tar.gz /opt/SST/12.1.0/src/
-    sstelements-12.1.0.tar.gz /opt/SST/12.1.0/src/
+    sstcore-12.0.1.tar.gz /opt/SST/12.0.1/src/
+    sstelements-12.0.1.tar.gz /opt/SST/12.0.1/src/
 #    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
 #    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
 #    semodule -X 300 -i my-systemdtmpfile.pp
 
 %environment
-    PATH=$PATH:/opt/SST/12.1.0/bin:/opt/OpenMPI/4.0.5/bin
+    PATH=$PATH:/opt/SST/12.0.1/bin:/opt/OpenMPI/4.0.5/bin
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 
@@ -71,13 +71,13 @@ Include: yum
     make -j4; make install
     export PATH=/opt/OpenMPI/4.0.5/bin:$PATH
 
-    cd /opt/SST/12.1.0/src
-    tar --no-same-owner -xvzf sstcore-12.1.0.tar.gz
-    cd sstcore-12.1.0; ./configure --prefix=/opt/SST/12.1.0; time make -j4 all; make install
+    cd /opt/SST/12.0.1/src
+    tar --no-same-owner -xvzf sstcore-12.0.1.tar.gz
+    cd sstcore-12.0.1; ./configure --prefix=/opt/SST/12.0.1; time make -j4 all; make install
 
-    cd /opt/SST/12.1.0/src
-    tar --no-same-owner -xvzf sstelements-12.1.0.tar.gz
-    cd sst-elements-library-12.1.0; ./configure --prefix=/opt/SST/12.1.0/elements -with-sst-core=/opt/SST/12.1.0; time make -j4 all; make install
+    cd /opt/SST/12.0.1/src
+    tar --no-same-owner -xvzf sstelements-12.0.1.tar.gz
+    cd sst-elements-library-12.0.1; ./configure --prefix=/opt/SST/12.0.1/elements -with-sst-core=/opt/SST/12.0.1; time make -j4 all; make install
 
 %help
-    SST 12.1.0-Centos 8: Creates an SST Core + SST Elements image with the necessary software dependencies
+    SST 12.0.1-Centos 8: Creates an SST Core + SST Elements image with the necessary software dependencies
