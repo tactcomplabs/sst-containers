@@ -1,0 +1,83 @@
+Bootstrap: yum
+OSVersion: 8
+MirrorURL: http://packages.oit.ncsu.edu/centos/8-stream/BaseOS/x86_64/os/
+Include: yum
+
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/12.1.0/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/12.1.0/elements
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/OpenMPI/4.0.5/src
+
+
+%files
+    sstcore-12.1.0.tar.gz /opt/SST/12.1.0/src/
+    sstelements-12.1.0.tar.gz /opt/SST/12.1.0/src/
+#    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
+#    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
+#    semodule -X 300 -i my-systemdtmpfile.pp
+
+%environment
+    PATH=$PATH:/opt/SST/12.1.0/bin:/opt/OpenMPI/4.0.5/bin
+    LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+
+
+%runscript
+
+%post
+    time yum clean all
+    time yum update -y
+    yum install -y dnf-plugins-core
+    yum install -y epel-release
+    yum install -y 'dnf-command(config-manager)'
+    yum config-manager --set-enabled powertools
+    dnf group install -y "Development Tools"
+    time yum install -y \
+               graphviz \
+               time \
+               wget \
+               python3 \
+               python3-devel \
+               python3-pip \
+               doxygen \
+               automake \
+               zlib-devel \
+               valgrind
+
+    time yum clean all
+    time python3 -m pip install --upgrade pip --find-links=.
+    time python3 -m pip install --find-links=. --upgrade Pillow
+    time python3 -m pip install --upgrade pip --find-links=. \
+          black \
+          matplotlib \
+          matplotlib-label-lines \
+          networkx==2.4 \
+          numpy==1.19.1 \
+          pandas \
+          setuptools \
+          xmltodict \
+          wheel \
+          testtools \
+          blessings \
+          pygments
+
+    set -e
+
+    cd /opt/OpenMPI/4.0.5/src
+    wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.5.tar.gz
+    tar --no-same-owner -xzvf openmpi-4.0.5.tar.gz
+    cd openmpi-4.0.5
+    ./configure --prefix=/opt/OpenMPI/4.0.5
+    make -j4; make install
+    export PATH=/opt/OpenMPI/4.0.5/bin:$PATH
+
+    cd /opt/SST/12.1.0/src
+    tar --no-same-owner -xvzf sstcore-12.1.0.tar.gz
+    cd sstcore-12.1.0; ./configure --prefix=/opt/SST/12.1.0; time make -j4 all; make install
+
+    cd /opt/SST/12.1.0/src
+    tar --no-same-owner -xvzf sstelements-12.1.0.tar.gz
+    cd sst-elements-library-12.1.0; ./configure --prefix=/opt/SST/12.1.0/elements -with-sst-core=/opt/SST/12.0.1; time make -j4 all; make install
+
+%help
+    SST 12.1.0-Centos 8: Creates an SST Core + SST Elements image with the necessary software dependencies
