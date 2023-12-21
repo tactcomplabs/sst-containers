@@ -1,0 +1,86 @@
+Bootstrap: yum
+OSVersion: 7
+MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearch/
+Include: yum
+
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/UPSTREAM/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/UPSTREAM/elements
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/OpenMPI/4.0.5/src
+
+%files
+
+
+%environment
+    PATH=$PATH:/opt/SST/UPSTREAM/bin:/opt/OpenMPI/4.0.5/bin
+    LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+
+
+%runscript
+    scl enable devtoolset-8 bash
+
+
+%post
+    SINGULARITY_PREPEND_PATH=/opt/rh/devtoolset-8/root/bin/
+    time yum clean all
+    time yum update -y
+    time yum install -y centos-release-scl \
+		yum-utils
+    time yum-config-manager --enable rhel-server-rhscl-7-rpms
+    time yum install -y \
+               devtoolset-8 \
+               doxygen \
+               graphviz \
+               time \
+               wget \
+               python3 \
+               python3-devel \
+               python3-pip \
+               automake \
+               git \
+               libtool-ltdl \
+               libtool-ltdl-devel \
+               zlib-devel \
+               valgrind
+    time yum group install -y "Development Tools"
+
+
+    time yum clean all
+    time python3 -m pip install --upgrade pip --find-links=.
+    time python3 -m pip install --find-links=. --upgrade Pillow
+    time python3 -m pip install --upgrade pip --find-links=. \
+          black \
+          matplotlib \
+          matplotlib-label-lines \
+          networkx==2.4 \
+          numpy==1.19.1 \
+          pandas \
+          setuptools \
+          xmltodict \
+          wheel \
+          testtools \
+          blessings \
+          pygments
+
+    set -e
+    source scl_source enable devtoolset-8 || true
+    PATH=/opt/rh/devtoolset-8/root/bin:$PATH
+
+    cd /opt/OpenMPI/4.0.5/src
+    wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.5.tar.gz
+    tar --no-same-owner -xzvf openmpi-4.0.5.tar.gz
+    cd openmpi-4.0.5
+    ./configure --prefix=/opt/OpenMPI/4.0.5
+    make -j4; make install
+    export PATH=/opt/OpenMPI/4.0.5/bin:$PATH
+
+    cd /opt/SST/UPSTREAM/src
+    git clone https://github.com/sstsimulator/sst-core.git
+    git clone https://github.com/sstsimulator/sst-elements.git
+    cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/UPSTREAM; time make -j4 all; make install
+    cd ../sst-elements; ./autogen.sh; ./configure --prefix=/opt/SST/UPSTREAM/elements -with-sst-core=/opt/SST/UPSTREAM; make -j4 all; make install
+
+
+%help
+    SST Git Master-Centos 7: Creates a basic SST Core image with the necessary software dependencies
