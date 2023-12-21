@@ -1,5 +1,5 @@
 ##############################################
-# sstcore-MASTER-ubuntu-18.04.def
+# sstcore-UPSTREAM-ubuntu-18.04.def
 ##############################################
 Bootstrap: debootstrap
 OSVersion: bionic
@@ -7,15 +7,15 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 Include: software-properties-common
 
 %setup
-  mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/MASTER/src
+  mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/UPSTREAM/src
 
 %files
 
 %environment
-  PATH=$PATH:/opt/SST/MASTER/bin
+  PATH=$PATH:/opt/SST/UPSTREAM/bin
 
 %runscript
-  echo "SSTCore GIT MASTER using Ubuntu 18.04 created $NOW"
+  echo "SSTCore GIT UPSTREAM using Ubuntu 18.04 created $NOW"
   echo "Arguments utilized: $*"
   exec echo "$@"
 
@@ -55,9 +55,9 @@ Include: software-properties-common
     pygments
 
   echo "btl_base_warn_component_unused = 0" >> /etc/openmpi/openmpi-mca-params.conf
-  cd /opt/SST/MASTER/src
+  cd /opt/SST/UPSTREAM/src
   git clone https://github.com/sstsimulator/sst-core.git
-  cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER; make -j4 all; make install
+  cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/UPSTREAM; make -j4 all; make install
 
   NOW=`date`
   echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
@@ -67,4 +67,4 @@ Include: software-properties-common
 
 %labels
   Author contact@tactcomplabs.com
-  Version MASTER
+  Version UPSTREAM

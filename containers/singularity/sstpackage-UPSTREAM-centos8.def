@@ -5,15 +5,15 @@ Include: yum
 
 
 %setup
-    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/MASTER/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/UPSTREAM/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/UPSTREAM/elements
     mkdir -p ${SINGULARITY_ROOTFS}/opt/OpenMPI/4.0.5/src
-
 
 %files
 
 
 %environment
-    PATH=$PATH:/opt/SST/MASTER/bin:/opt/OpenMPI/4.0.5/bin
+    PATH=$PATH:/opt/SST/UPSTREAM/bin:/opt/OpenMPI/4.0.5/bin
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 #    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
 #    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
@@ -39,6 +39,7 @@ Include: yum
                python3-pip \
                doxygen \
                automake \
+               libtool-ltdl-devel \
                zlib-devel \
                valgrind
 
@@ -68,9 +69,11 @@ Include: yum
     ./configure --prefix=/opt/OpenMPI/4.0.5
     make -j4; make install
     export PATH=/opt/OpenMPI/4.0.5/bin:$PATH
-    cd /opt/SST/MASTER/src
+    cd /opt/SST/UPSTREAM/src
     git clone https://github.com/sstsimulator/sst-core.git
-    cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/MASTER; time make -j4 all; make install
+    git clone https://github.com/sstsimulator/sst-elements.git
+    cd sst-core; ./autogen.sh; ./configure --prefix=/opt/SST/UPSTREAM; time make -j4 all; make install
+    cd ../sst-elements; ./autogen.sh; ./configure --prefix=/opt/SST/UPSTREAM/elements -with-sst-core=/opt/SST/UPSTREAM; make all; make install
 
 
 %help
