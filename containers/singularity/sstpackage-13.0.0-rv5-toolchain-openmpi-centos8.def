@@ -1,0 +1,124 @@
+Bootstrap: yum
+OSVersion: 8
+MirrorURL: http://packages.oit.ncsu.edu/centos/8-stream/BaseOS/x86_64/os/
+Include: yum
+
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/13.0.0/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/13.0.0/elements
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/OpenMPI/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/pmix/src
+    mkdir -p ${SINGULARITY_ROOTFS}/temp/RVGCC
+
+%files
+    sstcore-13.0.0.tar.gz /opt/SST/13.0.0/src/
+    sstelements-13.0.0.tar.gz /opt/SST/13.0.0/src/
+#    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
+#    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
+#    semodule -X 300 -i my-systemd2tmpfile.pp
+
+#Note that we have added environment variables to add the RISC-V compiler and paths 
+#to build the Rev SST module
+%environment
+    PATH=$PATH:/opt/SST/13.0.0/bin:/opt/OpenMPI/4.1.6/bin:/opt/riscv/bin
+    LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+    export RISCV=/opt/riscv
+    export RVCC=/opt/riscv/bin/riscv64-unknown-elf-gcc
+    export RVCXX=/opt/riscv/bin/riscv64-unknown-elf-c++
+    export RVOBJDUMP=/opt/riscv/bin/riscv64-unknown-elf-objdump
+
+
+%runscript
+
+%post
+    time yum clean all
+    time yum update -y
+    yum install -y dnf-plugins-core
+    yum install -y epel-release
+    yum install -y 'dnf-command(config-manager)'
+    yum config-manager --set-enabled powertools
+    dnf group install -y "Development Tools"
+    time yum install -y \
+               graphviz \
+               time \
+               wget \
+               python3 \
+               python3-devel \
+               python3-pip \
+               doxygen \
+               automake \
+               zlib-devel \
+               valgrind \
+	       cmake \
+	       vim-enhanced \
+	       nano \
+	       gcc-toolset-11 \
+	       texinfo \
+	       expat expat-devel \
+	       gmp gmp-devel gmp-c++ \
+	       libevent libevent-devel \
+	       hwloc hwloc-devel \
+	       libtool-ltdl-devel libtool
+
+    time yum clean all
+    time python3 -m pip install --upgrade pip --find-links=.
+    time python3 -m pip install --find-links=. --upgrade Pillow
+    time python3 -m pip install --upgrade pip --find-links=. \
+          black \
+          matplotlib \
+          matplotlib-label-lines \
+          networkx==2.4 \
+          numpy==1.19.1 \
+          pandas \
+          setuptools \
+          xmltodict \
+          wheel \
+          testtools \
+          blessings \
+          pygments \
+
+    set -e
+
+    #Build PMIX to enable MPI to run in Apptainer "hybrid mode"
+    #Pick one of these versions based on your target system
+    export PMIXVER=3.2.5
+    #export PMIXVER=4.2.6
+    cd /opt/pmix/src
+    wget https://github.com/openpmix/openpmix/releases/download/v$PMIXVER/pmix-$PMIXVER.tar.bz2
+    tar -jxf pmix-$PMIXVER.tar.bz2
+    cd pmix-$PMIXVER/
+    ./configure --prefix=/opt/pmix/$PMIXVER
+    make -j
+    make install
+
+    #Use a slightly newer version of OpenMPI to avoid an error we see with PMIX 4.2.X and OMPI 4.05:
+    #	 "ORTE_ERROR_LOG: Not found in file ess_hnp_module.c at line 320"
+
+    export MPIVER=4.1.6
+    cd /opt/OpenMPI/src
+    wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-$MPIVER.tar.gz
+    tar --no-same-owner -xzvf openmpi-$MPIVER.tar.gz
+    cd openmpi-$MPIVER
+    ./configure --prefix=/opt/OpenMPI/$MPIVER --with-pmix=/opt/pmix/$PMIXVER
+    make -j
+    make install
+    export PATH=/opt/OpenMPI/$MPIVER/bin:$PATH
+
+    cd /opt/SST/13.0.0/src
+    tar --no-same-owner -xvzf sstcore-13.0.0.tar.gz
+    cd sstcore-13.0.0; ./configure --prefix=/opt/SST/13.0.0; time make -j4 all; make install
+
+    cd /opt/SST/13.0.0/src
+    tar --no-same-owner -xvzf sstelements-13.0.0.tar.gz
+    cd sst-elements-library-13.0.0; ./configure --prefix=/opt/SST/13.0.0/elements -with-sst-core=/opt/SST/13.0.0; time make -j4 all; make install
+	
+    git clone https://github.com/riscv-collab/riscv-gnu-toolchain.git /temp/RVGCC/riscv-gnu-toolchain	
+    cd /temp/RVGCC/riscv-gnu-toolchain/
+    git checkout 2023.10.18
+    ./configure --prefix=/opt/riscv --enable-multilib
+    make -j; make install
+    cd / && rm -rf /temp/RVGCC
+
+%help
+    SST 13.0.0-Centos 8: Creates an SST Core + SST Elements image with the necessary software dependencies
