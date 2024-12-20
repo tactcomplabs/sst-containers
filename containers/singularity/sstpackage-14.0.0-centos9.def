@@ -1,0 +1,107 @@
+Bootstrap: yum
+OSVersion: {{ CENTOS_VERSION }}
+MirrorURL: http://packages.oit.ncsu.edu/centos-stream/%{OSVersion}-stream/BaseOS/x86_64/os/
+Include: dnf
+
+#Specify the OS version and SST Version
+#Change by adding the following on the command-line:  
+#	apptainer build --build-arg SSTVERSION="13.0.1" <container.sif> <container.def>
+
+%arguments
+    CENTOS_VERSION=9
+    SSTVERSION=14.0.0
+    MPIVERSION=4.0.5
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/{{ SSTVERSION }}/src
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/SST/{{ SSTVERSION }}/elements
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/OpenMPI/{{ MPIVERSION }}/src
+
+
+%files
+    sstcore-{{ SSTVERSION }}.tar.gz /opt/SST/{{ SSTVERSION }}/src/
+    sstelements-{{ SSTVERSION }}.tar.gz /opt/SST/{{ SSTVERSION }}/src/
+#    The two lines below were necessary to avoid a SELinux alert, but perhaps a better way to avoid?
+#    ausearch -c 'systemd-tmpfile' --raw | audit2allow -M my-systemdtmpfile
+#    semodule -X 300 -i my-systemdtmpfile.pp
+
+%environment
+    PATH=$PATH:/opt/SST/{{ SSTVERSION }}/bin:/opt/OpenMPI/{{ MPIVERSION }}/bin
+    LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+
+
+%runscript
+
+%post
+    time dnf clean all
+    time dnf update -y
+    #The next two lines seemed to be needed to fix bdb_ro and GPG check errors
+    #See https://bugzilla.redhat.com/show_bug.cgi?id=1960991
+    restorecon -Rv /var/lib/rpm
+    rpmdb --rebuilddb
+    dnf install -y dnf-plugins-core
+    dnf install -y epel-release
+    dnf install -y 'dnf-command(config-manager)'
+    #Note that powerTools became CodeReadyBuild in Centos9+
+    #dnf config-manager --set-enabled powertools
+    dnf config-manager --set-enabled crb
+    dnf group install -y "Development Tools"
+    time dnf install -y --nogpgcheck \
+               graphviz \
+               time \
+               wget \
+               python3 \
+               python3-devel \
+               python3-pip \
+               doxygen \
+               automake \
+               zlib-devel \
+               valgrind \
+	       cmake \
+	       vim-enhanced \
+	       nano 
+
+    time dnf clean all
+    time python3 -m pip install --upgrade pip --find-links=.
+    time python3 -m pip install --find-links=. --upgrade Pillow
+    time python3 -m pip install --upgrade pip --find-links=. --ignore-installed \
+          black \
+          matplotlib \
+          matplotlib-label-lines \
+          networkx \
+          numpy \
+          pandas \
+          setuptools \
+          xmltodict \
+          wheel \
+          testtools \
+          blessings \
+          pygments
+
+    set -e
+
+    cd /opt/OpenMPI/{{ MPIVERSION }}/src
+
+    #Check for the version of MPI to select from the correct branch
+    #if [ {{MPIVERSION}} > "5.0.0" ]; then
+    #	wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-{{ MPIVERSION }}.tar.gz
+    #else
+    	wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-{{ MPIVERSION }}.tar.gz
+    #fi
+
+    tar --no-same-owner -xzvf openmpi-{{ MPIVERSION }}.tar.gz
+    cd openmpi-{{ MPIVERSION }}
+    ./configure --prefix=/opt/OpenMPI/{{ MPIVERSION }}
+    make -j4; make install
+    export PATH=/opt/OpenMPI/{{ MPIVERSION }}/bin:$PATH
+
+    cd /opt/SST/{{ SSTVERSION }}/src
+    tar --no-same-owner -xvzf sstcore-{{ SSTVERSION }}.tar.gz
+    cd sstcore-{{ SSTVERSION }}; ./configure --prefix=/opt/SST/{{ SSTVERSION }}; time make -j4 all; make install
+
+    cd /opt/SST/{{ SSTVERSION }}/src
+    tar --no-same-owner -xvzf sstelements-{{ SSTVERSION }}.tar.gz
+    cd sst-elements-library-{{ SSTVERSION }}; ./configure --prefix=/opt/SST/{{ SSTVERSION }}/elements -with-sst-core=/opt/SST/{{ SSTVERSION }}; time make -j4 all; make install
+
+%help
+    SST {{ SSTVERSION }}-Centos {{ CENTOS_VERSION }}: Creates an SST Core + SST Elements image with the necessary software dependencies
