@@ -35,4 +35,4 @@ RUN tar --no-same-owner -xvzf sstelements-${SSTver}.tar.gz
 WORKDIR /opt/SST/${SSTver}/src/sst-elements
 RUN ./configure --prefix=/opt/SST/${SSTver}/elements -with-sst-core=/opt/SST/${SSTver}; make -j4 all; make install
 
-
+ENV PATH="$PATH:/opt/SST/14.1.0/bin/"
